@@ -1,6 +1,6 @@
 module Main where
 
-import Control.Monad (when)
+import Control.Monad (unless, liftM)
 import Data.List (mapAccumL)
 import System.Exit
 import System.Random
@@ -15,7 +15,7 @@ main = do
   checkDSAParameters dsaParameters
 
   line <- getLine
-  (action line) dsaParameters
+  action line dsaParameters
 
 action "genkey" = genKeys
 action "sign" = sign
@@ -70,14 +70,14 @@ getDSAPArameters = do
 checkDSAParameters :: DSAParameters -> IO ()
 checkDSAParameters dsaParameters = do
   gen <- getStdGen
-  when (not $ DSA.verifyParameters gen dsaParameters) $ do
+  unless (DSA.verifyParameters gen dsaParameters) $ do
     putStrLn "invalid_group"
     exitFailure
 
   putStrLn "valid_group"
 
 getNumber :: IO Integer
-getNumber = getLine >>= return . read . drop 2
+getNumber = liftM (read . drop 2) getLine
 
 showKeyPair :: KeyPair -> String
 showKeyPair (x, y) = 

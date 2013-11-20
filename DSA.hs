@@ -38,7 +38,7 @@ sign
   -> (g, DSASignature)
 sign gen (p, q, g) (x, _) z = (gen', (r, s))
   where (k, gen') = randomR (1, q - 1) gen
-        r = (powM p g k) `mod` q
+        r = powM p g k `mod` q
         s = fromJust $ divM q (z + mulM q x r) k -- Safe since k is in Z*_q
 
 verify
