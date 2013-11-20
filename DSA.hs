@@ -38,7 +38,7 @@ verify
   -> Integer -- ^ message digest
   -> DSASignature
   -> Bool
-verify (p, q, g) x z (r, s) = v == r
+verify (p, q, g) y z (r, s) = v == r
   where v  = mulM p (powM p g u1) (powM p y u2) `mod` q
         u1 = mulM q z w
         u2 = mulM q r w
