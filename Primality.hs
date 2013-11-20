@@ -1,4 +1,4 @@
-module IsPrime where
+module Primality where
 
 import Data.List (mapAccumL)
 import Data.Tuple (swap)
