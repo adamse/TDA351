@@ -1,6 +1,6 @@
 module DSA where
 
-import Data.Maybe
+import Data.Maybe (fromJust)
 import System.Random
 import System.IO.Unsafe (unsafePerformIO)
 
