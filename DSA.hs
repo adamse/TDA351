@@ -28,7 +28,7 @@ sign
   -> Integer -- ^ message digest
   -> DSASignature
 sign (p, q, g) (x, y) z = (r, s)
-  where k = unsafePerformIO $ randomRIO (1, q - 1) -- TODO: don't use unsafePerformIO
+  where k = 1 -- unsafePerformIO $ randomRIO (1, q - 1) -- TODO: don't use unsafePerformIO
         r = (powM p g k) `mod` q
         s = fromJust $ divM q (z + mulM q x r) k -- Safe since k is in Z*_q
 
@@ -43,3 +43,23 @@ verify (p, q, g) y z (r, s) = v == r
         u1 = mulM q z w
         u2 = mulM q r w
         w  = fromJust $ invM q s -- Safe since s is in Z*_q
+
+verifyParameters :: DSAParameters -> Bool
+verifyParameters (p, q, g) =
+  and [ isPrime p
+      , isPrime q
+      , hasBits 1024 p
+      , hasBits 160 q
+      , q `divides` (p - 1)
+      , powM p g q == 1
+      , g > 1
+      ]
+
+hasBits :: Integer -> Integer -> Bool
+hasBits n x = 2 ^ (n - 1) <= x && x < 2 ^ n
+
+divides :: Integer -> Integer -> Bool
+divides a b = b `mod` a == 0
+
+isPrime :: Integer -> Bool
+isPrime = undefined
