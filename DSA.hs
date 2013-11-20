@@ -5,6 +5,7 @@ import System.Random
 import System.IO.Unsafe (unsafePerformIO)
 
 import Math
+import qualified IsPrime
 
 type DSAParameters = 
   ( Integer -- ^ p - a prime modulus
@@ -27,8 +28,8 @@ sign
   -> KeyPair 
   -> Integer -- ^ message digest
   -> DSASignature
-sign (p, q, g) (x, y) z = (r, s)
-  where k = 1 -- unsafePerformIO $ randomRIO (1, q - 1) -- TODO: don't use unsafePerformIO
+sign (p, q, g) (x, _) z = (r, s)
+  where k = unsafePerformIO $ randomRIO (1, q - 1) -- TODO: don't use unsafePerformIO
         r = (powM p g k) `mod` q
         s = fromJust $ divM q (z + mulM q x r) k -- Safe since k is in Z*_q
 
@@ -62,4 +63,6 @@ divides :: Integer -> Integer -> Bool
 divides a b = b `mod` a == 0
 
 isPrime :: Integer -> Bool
-isPrime = undefined
+isPrime n = unsafePerformIO $ do -- TODO: Don't use unsafePerformIO
+  gen <- getStdGen
+  return $ IsPrime.isPrime gen n

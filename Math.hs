@@ -13,7 +13,7 @@ mulM n a b = (a * b) `mod` n
 powM :: Integer -> Integer -> Integer -> Integer
 powM _ _ 0 = 1
 powM n a p
-  | even n    = r
+  | even p    = r
   | otherwise = mulM n r a
   where r = powM n (mulM n a a) (p `div` 2)
 
