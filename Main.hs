@@ -41,9 +41,10 @@ sign dsa = do
 
   gen <- getStdGen
 
-  let zs = map (hexadecimal . pack) $ lines ds
-  let (_, ss) = mapAccumL (\gen (Right (z, _)) -> DSA.sign gen dsa (x, y) z) gen zs
+  let zs = map (readHexNumber) $ lines ds
+  let (_, ss) = mapAccumL (\gen z -> DSA.sign gen dsa (x, y) z) gen zs
 
+  putStrLn ds
   putStr . unlines $ map showDSASignature ss
 
 verify dsa = do
@@ -54,9 +55,9 @@ verify dsa = do
   where
     loop _ [] = return ()
     loop y (d':r':s':ss) = do
-      let (Right (d, _)) = hexadecimal . pack . drop 2 $ d'
-      let r = read . drop 2 $ r'
-      let s = read . drop 2 $ s'
+      let d = readHexNumber d'
+      let r = readNumber $ r'
+      let s = readNumber $ s'
       putStrLn $ if DSA.verify dsa y d (r, s) then "signature_valid" else "signature_invalid"
       loop y ss
 
@@ -77,7 +78,13 @@ checkDSAParameters dsaParameters = do
   putStrLn "valid_group"
 
 getNumber :: IO Integer
-getNumber = liftM (read . drop 2) getLine
+getNumber = liftM readNumber getLine
+
+readNumber :: String -> Integer
+readNumber = read . drop 2
+
+readHexNumber :: String -> Integer
+readHexNumber s = let (Right (n, _)) = hexadecimal . pack . drop 2 $ s in n
 
 showKeyPair :: KeyPair -> String
 showKeyPair (x, y) = 
