@@ -26,8 +26,8 @@ type DSASignature =
 genKey :: RandomGen g => g -> DSAParameters -> KeyPair
 genKey gen (p, q, g) | c > q-2   = genKey gen' (p, q, g)
                      | otherwise = (x, y)
-  where N         = 160
-        (c, gen') = randomR (2^(N-1), 2^N-1) gen
+  where n         = 160
+        (c, gen') = randomR (2^(n-1), 2^n-1) gen
         x         = c + 1
         y         = powM p g x
 
