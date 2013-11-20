@@ -44,7 +44,6 @@ sign dsa = do
   let zs = map (readHexNumber) $ lines ds
   let (_, ss) = mapAccumL (\gen z -> DSA.sign gen dsa (x, y) z) gen zs
 
-  putStrLn ds
   putStr . unlines $ map showDSASignature ss
 
 verify dsa = do
