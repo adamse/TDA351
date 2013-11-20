@@ -30,7 +30,7 @@ sign
 sign (p, q, g) (x, y) z = (r, s)
   where k = unsafePerformIO $ randomRIO (1, q - 1) -- TODO: don't use unsafePerformIO
         r = (powM p g k) `mod` q
-        s = fromJust $ divM q (z + mulM q x r) k -- Safe since all k has inverse in modulo q
+        s = fromJust $ divM q (z + mulM q x r) k -- Safe since k is in Z*_q
 
 verify
   :: DSAParameters 
@@ -39,7 +39,7 @@ verify
   -> DSASignature
   -> Bool
 verify (p, q, g) x z (r, s) = v == r
-  where v  = mulM p (powP p g u1) (powP p y u2) `mod` q -- may be wrong, should be ((g^u1 * y^u2) mod p) mod q
+  where v  = mulM p (powM p g u1) (powM p y u2) `mod` q
         u1 = mulM q z w
         u2 = mulM q r w
-        w = fromJust (invM s) `mod` q -- will throw an error if s: Nothing
+        w  = fromJust $ invM q s -- Safe since s is in Z*_q
