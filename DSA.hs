@@ -33,8 +33,8 @@ sign (p, q, g) (x, y) z = (r, s)
         s = fromJust $ divM q (z + mulM q x r) k -- Safe since k is in Z*_q
 
 verify
-  :: DSAParameters 
-  -> Integer -- ^ public key of the sender 
+  :: DSAParameters
+  -> Integer -- ^ public key of the sender
   -> Integer -- ^ message digest
   -> DSASignature
   -> Bool
