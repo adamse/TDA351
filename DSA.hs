@@ -62,6 +62,7 @@ verifyParameters gen (p, q, g) =
       , q `divides` (p - 1)
       , powM p g q == 1
       , g > 1
+      , p > g
       ]
 
 hasBits :: Integer -> Integer -> Bool
